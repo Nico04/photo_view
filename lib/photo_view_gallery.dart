@@ -6,6 +6,7 @@ import 'package:photo_view/photo_view.dart'
     show
         LoadingBuilder,
         PhotoView,
+        PhotoViewFrameBuilder,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
         PhotoViewImageScaleEndCallback,
@@ -275,6 +276,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
+            frameBuilder: pageOption.frameBuilder,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -303,6 +305,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
             errorBuilder: pageOption.errorBuilder,
+            frameBuilder: pageOption.frameBuilder,
           );
 
     return ClipRect(
@@ -344,6 +347,7 @@ class PhotoViewGalleryPageOptions {
     this.filterQuality,
     this.disableGestures,
     this.errorBuilder,
+    this.frameBuilder,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -367,6 +371,7 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.frameBuilder,
   })  : errorBuilder = null,
         imageProvider = null;
 
@@ -429,4 +434,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder? errorBuilder;
+
+  /// Mirror to [PhotoView.frameBuilder]
+  final PhotoViewFrameBuilder? frameBuilder;
 }

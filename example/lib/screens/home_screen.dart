@@ -4,6 +4,7 @@ import 'package:photo_view_example/screens/examples/common_use_cases_examples.da
 import 'package:photo_view_example/screens/examples/controller_example.dart';
 import 'package:photo_view_example/screens/examples/custom_child_examples.dart';
 import 'package:photo_view_example/screens/examples/dialog_example.dart';
+import 'package:photo_view_example/screens/examples/frame_builder_example.dart';
 import 'package:photo_view_example/screens/examples/gallery/gallery_example.dart';
 import 'package:photo_view_example/screens/examples/hero_example.dart';
 import 'package:photo_view_example/screens/examples/inline_examples.dart';
@@ -149,6 +150,18 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   text: "Rotation Programmatic",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FrameBuilderExample(),
+                      ),
+                    );
+                  },
+                  text: "Frame Builder",
                 ),
               ],
             ),

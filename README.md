@@ -102,6 +102,58 @@ Gallery sample in the example app:
 See the code [here](https://github.com/bluefireteam/photo_view/blob/master/example/lib/screens/examples/gallery/gallery_example.dart).
 
 
+## Frame Builder
+
+Use `frameBuilder` to wrap the PhotoView content with your own widget, for example to add an overlay on top of the zoomable content. It works the same way as Flutter's `Image.frameBuilder`.
+
+```dart
+PhotoView(
+  imageProvider: AssetImage("assets/large-image.jpg"),
+  frameBuilder: (context, child) {
+    return Stack(
+      children: [
+        child,
+        Positioned(
+          bottom: 16,
+          left: 16,
+          child: Text(
+            "Caption overlay",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  },
+)
+```
+
+In gallery mode, set it per page via `PhotoViewGalleryPageOptions.frameBuilder`:
+
+```dart
+PhotoViewGallery.builder(
+  builder: (BuildContext context, int index) {
+    return PhotoViewGalleryPageOptions(
+      imageProvider: AssetImage(images[index]),
+      frameBuilder: (context, child) {
+        return Stack(
+          children: [
+            child,
+            Positioned(
+              bottom: 16,
+              left: 16,
+              child: Text(captions[index]),
+            ),
+          ],
+        );
+      },
+    );
+  },
+  itemCount: images.length,
+)
+```
+
+See the code [here](https://github.com/bluefireteam/photo_view/blob/master/example/lib/screens/examples/frame_builder_example.dart).
+
 
 ## Usage with controllers
 

@@ -129,6 +129,34 @@ export 'src/utils/photo_view_hero_attributes.dart';
 /// )
 /// ```
 ///
+/// ## Frame Builder
+///
+/// Use [frameBuilder] to wrap the PhotoView content with your own widget,
+/// for example to add an overlay on top of the zoomable content:
+///
+/// ```
+/// PhotoView(
+///   imageProvider: AssetImage("assets/large-image.jpg"),
+///   frameBuilder: (context, child) {
+///     return Stack(
+///       children: [
+///         child,
+///         Positioned(
+///           bottom: 16,
+///           left: 16,
+///           child: Text(
+///             "Caption overlay",
+///             style: TextStyle(color: Colors.white),
+///           ),
+///         ),
+///       ],
+///     );
+///   },
+/// )
+/// ```
+///
+/// This also works in gallery mode via [PhotoViewGalleryPageOptions.frameBuilder].
+///
 /// **Note: If you don't want to the zoomed image do not overlaps the size of the container, use [ClipRect](https://docs.flutter.io/flutter/widgets/ClipRect-class.html)**
 ///
 /// ## Controllers
@@ -263,6 +291,7 @@ class PhotoView extends StatefulWidget {
     this.errorBuilder,
     this.enablePanAlways,
     this.strictScale,
+    this.frameBuilder,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -299,6 +328,7 @@ class PhotoView extends StatefulWidget {
     this.disableGestures,
     this.enablePanAlways,
     this.strictScale,
+    this.frameBuilder,
   })  : errorBuilder = null,
         imageProvider = null,
         semanticLabel = null,
@@ -415,6 +445,11 @@ class PhotoView extends StatefulWidget {
   /// Enable strictScale will restrict user scale gesture to the maxScale and minScale values.
   final bool? strictScale;
 
+  /// A builder that allows wrapping or decorating the PhotoView content widget.
+  /// Similar to [Image.frameBuilder], this receives the built PhotoView content and returns a new widget.
+  /// See also [PhotoViewFrameBuilder].
+  final PhotoViewFrameBuilder? frameBuilder;
+
   bool get _isCustomChild {
     return child != null;
   }
@@ -511,7 +546,7 @@ class _PhotoViewState extends State<PhotoView>
         final backgroundDecoration = widget.backgroundDecoration ??
             const BoxDecoration(color: Colors.black);
 
-        return widget._isCustomChild
+        final Widget content = widget._isCustomChild
             ? CustomChildWrapper(
                 child: widget.child,
                 childSize: widget.childSize,
@@ -565,6 +600,8 @@ class _PhotoViewState extends State<PhotoView>
                 enablePanAlways: widget.enablePanAlways,
                 strictScale: widget.strictScale,
               );
+
+        return widget.frameBuilder?.call(context, content) ?? content;
       },
     );
   }
@@ -621,3 +658,33 @@ typedef LoadingBuilder = Widget Function(
   BuildContext context,
   ImageChunkEvent? event,
 );
+
+/// A type definition for a [Function] that receives the built [PhotoView]
+/// content widget and returns a new widget wrapping or decorating it.
+///
+/// Similar to [Image.frameBuilder], this allows consumers to wrap the PhotoView
+/// content with their own widgets, for example to add an overlay on top of it.
+///
+/// Example:
+/// ```dart
+/// PhotoView(
+///   imageProvider: AssetImage("assets/large-image.jpg"),
+///   frameBuilder: (context, child) {
+///     return Stack(
+///       children: [
+///         child,
+///         Positioned(
+///           bottom: 16,
+///           left: 16,
+///           child: Text("Overlay caption"),
+///         ),
+///       ],
+///     );
+///   },
+/// )
+/// ```
+typedef PhotoViewFrameBuilder = Widget Function(
+  BuildContext context,
+  Widget child,
+);
+
