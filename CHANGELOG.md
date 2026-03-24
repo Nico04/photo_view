@@ -1,3 +1,10 @@
+<a name="unreleased"></a>
+# 1.0.0
+## Added
+- Add thumbnail bar `PhotoViewGallery`.
+- Add new `frameBuilder` to `PhotoView` to provide a way to customize the image frame.
+- BREAKING: refactor constructor using new `PhotoViewGalleryPageOptions` data class.
+
 <a name="0.15.0"></a>
 # [0.15.0](https://github.com/bluefireteam/photo_view/releases/tag/0.15.0) - 17 Apr 2024
 
