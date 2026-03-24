@@ -26,9 +26,11 @@ class GestureRotationExample extends StatelessWidget {
               child: ClipRect(
                 child: PhotoView(
                   imageProvider: const AssetImage("assets/large-image.jpg"),
-                  maxScale: PhotoViewComputedScale.covered,
-                  initialScale: PhotoViewComputedScale.contained * 0.8,
-                  enableRotation: true,
+                  options: PhotoViewOptions(
+                    maxScale: PhotoViewComputedScale.covered,
+                    initialScale: PhotoViewComputedScale.contained * 0.8,
+                    enableRotation: true,
+                  ),
                 ),
               ),
             ),
@@ -85,9 +87,11 @@ class _ProgrammaticRotationExampleState
                         controller: _controller,
                         imageProvider:
                             const AssetImage("assets/large-image.jpg"),
-                        maxScale: PhotoViewComputedScale.covered,
-                        initialScale: PhotoViewComputedScale.contained * 0.8,
-                        enableRotation: false,
+                        options: PhotoViewOptions(
+                          maxScale: PhotoViewComputedScale.covered,
+                          initialScale: PhotoViewComputedScale.contained * 0.8,
+                          enableRotation: false,
+                        ),
                       ),
                     ),
                   ),

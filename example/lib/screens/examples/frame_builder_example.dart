@@ -130,7 +130,9 @@ class _GalleryFrameBuilderExampleState
           builder: (BuildContext context, int index) {
             return PhotoViewGalleryPageOptions(
               imageProvider: AssetImage(_images[index]),
-              initialScale: PhotoViewComputedScale.contained,
+              options: const PhotoViewOptions(
+                initialScale: PhotoViewComputedScale.contained,
+              ),
               frameBuilder: (context, child) {
                 return Stack(
                   children: [

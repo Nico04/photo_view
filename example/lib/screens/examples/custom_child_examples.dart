@@ -45,7 +45,9 @@ class CustomChildExample extends StatelessWidget {
                     ],
                   ),
                 ),
-                initialScale: 1.0,
+                options: const PhotoViewOptions(
+                  initialScale: 1.0,
+                ),
               ),
             ),
           ),

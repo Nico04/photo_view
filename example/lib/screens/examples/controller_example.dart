@@ -62,10 +62,12 @@ class _ControllerExampleState extends State<ControllerExample> {
                 imageProvider: const AssetImage("assets/large-image.jpg"),
                 controller: controller,
                 scaleStateController: scaleStateController,
-                enableRotation: true,
-                initialScale: minScale * 1.5,
-                minScale: minScale,
-                maxScale: maxScale,
+                options: const PhotoViewOptions(
+                  enableRotation: true,
+                  initialScale: minScale * 1.5,
+                  minScale: minScale,
+                  maxScale: maxScale,
+                ),
               ),
             ),
             Positioned(

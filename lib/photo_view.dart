@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
-import 'package:photo_view/src/core/photo_view_core.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_options.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_wrappers.dart';
-import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
 export 'src/controller/photo_view_controller.dart';
 export 'src/controller/photo_view_scalestate_controller.dart';
 export 'src/core/photo_view_gesture_detector.dart'
     show PhotoViewGestureDetectorScope;
 export 'src/photo_view_computed_scale.dart';
+export 'src/photo_view_options.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
 
@@ -270,28 +270,13 @@ class PhotoView extends StatefulWidget {
     this.wantKeepAlive = false,
     this.semanticLabel,
     this.gaplessPlayback = false,
-    this.heroAttributes,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
     this.controller,
     this.scaleStateController,
-    this.maxScale,
-    this.minScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
-    this.onTapUp,
-    this.onTapDown,
-    this.onScaleEnd,
     this.customSize,
-    this.gestureDetectorBehavior,
-    this.tightMode,
-    this.filterQuality,
-    this.disableGestures,
     this.errorBuilder,
-    this.enablePanAlways,
-    this.strictScale,
     this.frameBuilder,
+    this.options = const PhotoViewOptions(),
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -308,27 +293,12 @@ class PhotoView extends StatefulWidget {
     this.childSize,
     this.backgroundDecoration,
     this.wantKeepAlive = false,
-    this.heroAttributes,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
     this.controller,
     this.scaleStateController,
-    this.maxScale,
-    this.minScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
-    this.onTapUp,
-    this.onTapDown,
-    this.onScaleEnd,
     this.customSize,
-    this.gestureDetectorBehavior,
-    this.tightMode,
-    this.filterQuality,
-    this.disableGestures,
-    this.enablePanAlways,
-    this.strictScale,
     this.frameBuilder,
+    this.options = const PhotoViewOptions(),
   })  : errorBuilder = null,
         imageProvider = null,
         semanticLabel = null,
@@ -365,10 +335,6 @@ class PhotoView extends StatefulWidget {
   /// to `false`.
   final bool gaplessPlayback;
 
-  /// Attributes that are going to be passed to [PhotoViewCore]'s
-  /// [Hero]. Leave this property undefined if you don't want a hero animation.
-  final PhotoViewHeroAttributes? heroAttributes;
-
   /// Defines the size of the scaling base of the image inside [PhotoView],
   /// by default it is `MediaQuery.of(context).size`.
   final Size? customSize;
@@ -376,29 +342,11 @@ class PhotoView extends StatefulWidget {
   /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
   final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
 
-  /// A flag that enables the rotation gesture support
-  final bool enableRotation;
-
   /// The specified custom child to be shown instead of a image
   final Widget? child;
 
   /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
   final Size? childSize;
-
-  /// Defines the maximum size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic maxScale;
-
-  /// Defines the minimum size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic minScale;
-
-  /// Defines the initial size in which the image will be assume in the mounting of the component, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic initialScale;
 
   /// A way to control PhotoView transformation factors externally and listen to its updates
   final PhotoViewControllerBase? controller;
@@ -406,49 +354,14 @@ class PhotoView extends StatefulWidget {
   /// A way to control PhotoViewScaleState value externally and listen to its updates
   final PhotoViewScaleStateController? scaleStateController;
 
-  /// The alignment of the scale origin in relation to the widget size. Default is [Alignment.center]
-  final Alignment? basePosition;
-
-  /// Defines de next [PhotoViewScaleState] given the actual one. Default is [defaultScaleStateCycle]
-  final ScaleStateCycle? scaleStateCycle;
-
-  /// A pointer that will trigger a tap has stopped contacting the screen at a
-  /// particular location.
-  final PhotoViewImageTapUpCallback? onTapUp;
-
-  /// A pointer that might cause a tap has contacted the screen at a particular
-  /// location.
-  final PhotoViewImageTapDownCallback? onTapDown;
-
-  /// A pointer that will trigger a scale has stopped contacting the screen at a
-  /// particular location.
-  final PhotoViewImageScaleEndCallback? onScaleEnd;
-
-  /// [HitTestBehavior] to be passed to the internal gesture detector.
-  final HitTestBehavior? gestureDetectorBehavior;
-
-  /// Enables tight mode, making background container assume the size of the image/child.
-  /// Useful when inside a [Dialog]
-  final bool? tightMode;
-
-  /// Quality levels for image filters.
-  final FilterQuality? filterQuality;
-
-  // Removes gesture detector if `true`.
-  // Useful when custom gesture detector is used in child widget.
-  final bool? disableGestures;
-
-  /// Enable pan the widget even if it's smaller than the hole parent widget.
-  /// Useful when you want to drag a widget without restrictions.
-  final bool? enablePanAlways;
-
-  /// Enable strictScale will restrict user scale gesture to the maxScale and minScale values.
-  final bool? strictScale;
-
   /// A builder that allows wrapping or decorating the PhotoView content widget.
   /// Similar to [Image.frameBuilder], this receives the built PhotoView content and returns a new widget.
   /// See also [PhotoViewFrameBuilder].
   final PhotoViewFrameBuilder? frameBuilder;
+
+  /// Shared configuration options for gesture, scale and display behavior.
+  /// See [PhotoViewOptions] for all available fields and their defaults.
+  final PhotoViewOptions options;
 
   bool get _isCustomChild {
     return child != null;
@@ -548,29 +461,13 @@ class _PhotoViewState extends State<PhotoView>
 
         final Widget content = widget._isCustomChild
             ? CustomChildWrapper(
-                child: widget.child,
+                child: widget.child!,
                 childSize: widget.childSize,
                 backgroundDecoration: backgroundDecoration,
-                heroAttributes: widget.heroAttributes,
-                scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
                 controller: _controller,
                 scaleStateController: _scaleStateController,
-                maxScale: widget.maxScale,
-                minScale: widget.minScale,
-                initialScale: widget.initialScale,
-                basePosition: widget.basePosition,
-                scaleStateCycle: widget.scaleStateCycle,
-                onTapUp: widget.onTapUp,
-                onTapDown: widget.onTapDown,
-                onScaleEnd: widget.onScaleEnd,
                 outerSize: computedOuterSize,
-                gestureDetectorBehavior: widget.gestureDetectorBehavior,
-                tightMode: widget.tightMode,
-                filterQuality: widget.filterQuality,
-                disableGestures: widget.disableGestures,
-                enablePanAlways: widget.enablePanAlways,
-                strictScale: widget.strictScale,
+                options: widget.options,
               )
             : ImageWrapper(
                 imageProvider: widget.imageProvider!,
@@ -578,27 +475,11 @@ class _PhotoViewState extends State<PhotoView>
                 backgroundDecoration: backgroundDecoration,
                 semanticLabel: widget.semanticLabel,
                 gaplessPlayback: widget.gaplessPlayback,
-                heroAttributes: widget.heroAttributes,
-                scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
                 controller: _controller,
                 scaleStateController: _scaleStateController,
-                maxScale: widget.maxScale,
-                minScale: widget.minScale,
-                initialScale: widget.initialScale,
-                basePosition: widget.basePosition,
-                scaleStateCycle: widget.scaleStateCycle,
-                onTapUp: widget.onTapUp,
-                onTapDown: widget.onTapDown,
-                onScaleEnd: widget.onScaleEnd,
                 outerSize: computedOuterSize,
-                gestureDetectorBehavior: widget.gestureDetectorBehavior,
-                tightMode: widget.tightMode,
-                filterQuality: widget.filterQuality,
-                disableGestures: widget.disableGestures,
                 errorBuilder: widget.errorBuilder,
-                enablePanAlways: widget.enablePanAlways,
-                strictScale: widget.strictScale,
+                options: widget.options,
               );
 
         return widget.frameBuilder?.call(context, content) ?? content;

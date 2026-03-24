@@ -11,7 +11,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
     this.initialScale,
     this.basePosition = Alignment.center,
     this.filterQuality = FilterQuality.none,
-    this.disableGestures,
+    this.disableGestures = false,
     this.errorBuilder,
   });
 
@@ -23,7 +23,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
   final dynamic initialScale;
   final Alignment basePosition;
   final FilterQuality filterQuality;
-  final bool? disableGestures;
+  final bool disableGestures;
   final ImageErrorWidgetBuilder? errorBuilder;
 
   @override
@@ -37,13 +37,15 @@ class CommonExampleRouteWrapper extends StatelessWidget {
           imageProvider: imageProvider,
           loadingBuilder: loadingBuilder,
           backgroundDecoration: backgroundDecoration,
-          minScale: minScale,
-          maxScale: maxScale,
-          initialScale: initialScale,
-          basePosition: basePosition,
-          filterQuality: filterQuality,
-          disableGestures: disableGestures,
           errorBuilder: errorBuilder,
+          options: PhotoViewOptions(
+            minScale: minScale ?? 0.0,
+            maxScale: maxScale ?? double.infinity,
+            initialScale: initialScale ?? PhotoViewComputedScale.contained,
+            basePosition: basePosition,
+            filterQuality: filterQuality,
+            disableGestures: disableGestures,
+          ),
         ),
       ),
     );

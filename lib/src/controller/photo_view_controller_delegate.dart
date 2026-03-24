@@ -20,9 +20,9 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
 
   ScaleBoundaries get scaleBoundaries => widget.scaleBoundaries;
 
-  ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
+  ScaleStateCycle get scaleStateCycle => widget.options.scaleStateCycle;
 
-  Alignment get basePosition => widget.basePosition;
+  Alignment get basePosition => widget.options.basePosition;
   Function(double prevScale, double nextScale)? _animateScale;
 
   /// Mark if scale need recalculation, useful for scale boundaries changes.
@@ -62,7 +62,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void _blindScaleListener() {
-    if (!widget.enablePanAlways) {
+    if (!widget.options.enablePanAlways) {
       controller.position = clampPosition();
     }
     if (controller.scale == controller.prevValue.scale) {
