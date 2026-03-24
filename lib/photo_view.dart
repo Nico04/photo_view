@@ -274,7 +274,6 @@ class PhotoView extends StatefulWidget {
     this.scaleStateController,
     this.customSize,
     this.errorBuilder,
-    this.frameBuilder,
     this.options = const PhotoViewOptions(),
   })  : child = null,
         childSize = null,
@@ -295,7 +294,6 @@ class PhotoView extends StatefulWidget {
     this.controller,
     this.scaleStateController,
     this.customSize,
-    this.frameBuilder,
     this.options = const PhotoViewOptions(),
   })  : errorBuilder = null,
         imageProvider = null,
@@ -349,10 +347,6 @@ class PhotoView extends StatefulWidget {
   /// A way to control PhotoViewScaleState value externally and listen to its updates
   final PhotoViewScaleStateController? scaleStateController;
 
-  /// A builder that allows wrapping or decorating the PhotoView content widget.
-  /// Similar to [Image.frameBuilder], this receives the built PhotoView content and returns a new widget.
-  /// See also [PhotoViewFrameBuilder].
-  final PhotoViewFrameBuilder? frameBuilder;
 
   /// Shared configuration options for gesture, scale and display behavior.
   /// See [PhotoViewOptions] for all available fields and their defaults.
@@ -473,7 +467,7 @@ class _PhotoViewState extends State<PhotoView>
                 options: widget.options,
               );
 
-        return widget.frameBuilder?.call(context, content) ?? content;
+        return widget.options.frameBuilder?.call(context, content) ?? content;
       },
     );
   }

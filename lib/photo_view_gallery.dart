@@ -6,7 +6,6 @@ import 'package:photo_view/photo_view.dart'
     show
         LoadingBuilder,
         PhotoView,
-        PhotoViewFrameBuilder,
         PhotoViewOptions;
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
@@ -236,6 +235,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       enablePanAlways: pageOption.options.enablePanAlways,
       strictScale: pageOption.options.strictScale,
       backgroundDecoration: pageOption.options.backgroundDecoration,
+      frameBuilder: pageOption.options.frameBuilder,
     );
 
     final PhotoView photoView = isCustomChild
@@ -248,7 +248,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
             scaleStateChangedCallback: scaleStateChangedCallback,
-            frameBuilder: pageOption.frameBuilder,
             options: pageOptions,
           )
         : PhotoView(
@@ -263,7 +262,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             gaplessPlayback: widget.gaplessPlayback,
             scaleStateChangedCallback: scaleStateChangedCallback,
             errorBuilder: pageOption.errorBuilder,
-            frameBuilder: pageOption.frameBuilder,
             options: pageOptions,
           );
 
@@ -295,7 +293,6 @@ class PhotoViewGalleryPageOptions {
     this.controller,
     this.scaleStateController,
     this.errorBuilder,
-    this.frameBuilder,
     this.options = const PhotoViewOptions(),
   })  : child = null,
         childSize = null,
@@ -307,7 +304,6 @@ class PhotoViewGalleryPageOptions {
     this.childSize,
     this.controller,
     this.scaleStateController,
-    this.frameBuilder,
     this.options = const PhotoViewOptions(),
   })  : errorBuilder = null,
         imageProvider = null;
@@ -332,9 +328,6 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder? errorBuilder;
-
-  /// Mirror to [PhotoView.frameBuilder]
-  final PhotoViewFrameBuilder? frameBuilder;
 
   /// Shared configuration options for gesture, scale and display behavior.
   /// See [PhotoViewOptions] for all available fields and their defaults.

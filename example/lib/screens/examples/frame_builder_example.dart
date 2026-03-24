@@ -52,41 +52,43 @@ class _SingleFrameBuilderExample extends StatelessWidget {
         ),
         child: PhotoView(
           imageProvider: const AssetImage("assets/large-image.jpg"),
-          frameBuilder: (context, child) {
-            return Stack(
-              children: [
-                child,
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 0.6),
-                          Colors.transparent,
-                        ],
+          options: PhotoViewOptions(
+            frameBuilder: (context, child) {
+              return Stack(
+                children: [
+                  child,
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.6),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 24.0,
-                    ),
-                    child: const Text(
-                      "A beautiful landscape — caption overlay via frameBuilder",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 24.0,
+                      ),
+                      child: const Text(
+                        "A beautiful landscape — caption overlay via frameBuilder",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -130,44 +132,44 @@ class _GalleryFrameBuilderExampleState
           builder: (BuildContext context, int index) {
             return PhotoViewGalleryPageOptions(
               imageProvider: AssetImage(_images[index]),
-              options: const PhotoViewOptions(
+              options: PhotoViewOptions(
                 initialScale: PhotoViewComputedScale.contained,
-              ),
-              frameBuilder: (context, child) {
-                return Stack(
-                  children: [
-                    child,
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withValues(alpha: 0.6),
-                              Colors.transparent,
-                            ],
+                frameBuilder: (context, child) {
+                  return Stack(
+                    children: [
+                      child,
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.6),
+                                Colors.transparent,
+                              ],
+                            ),
                           ),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 24.0,
-                        ),
-                        child: Text(
-                          _captions[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 24.0,
+                          ),
+                          child: Text(
+                            _captions[index],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             );
           },
           itemCount: _images.length,

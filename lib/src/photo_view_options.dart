@@ -26,6 +26,7 @@ class PhotoViewOptions {
     this.enablePanAlways = false,
     this.strictScale = false,
     this.backgroundDecoration = const BoxDecoration(color: Colors.black),
+    this.frameBuilder,
   });
 
   /// Attributes that are going to be passed to [PhotoViewCore]'s [Hero].
@@ -92,4 +93,9 @@ class PhotoViewOptions {
 
   /// Changes the background behind image, defaults to `Colors.black`.
   final Decoration backgroundDecoration;
+
+  /// A builder that allows wrapping or decorating the PhotoView content widget.
+  /// Similar to [Image.frameBuilder], this receives the built PhotoView content
+  /// and returns a new widget. See also [PhotoViewFrameBuilder].
+  final PhotoViewFrameBuilder? frameBuilder;
 }
