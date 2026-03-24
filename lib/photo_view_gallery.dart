@@ -87,6 +87,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.customSize,
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
+    this.enableThumbnails = true,
   })  : itemCount = null,
         builder = null,
         super(key: key);
@@ -111,6 +112,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.customSize,
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
+    this.enableThumbnails = true,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
@@ -163,6 +165,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   final bool pageSnapping;
 
+  /// Whether to show a thumbnails bar at the bottom of the gallery.
+  final bool enableThumbnails;
+
   bool get _isBuilder => builder != null;
 
   @override
@@ -172,8 +177,11 @@ class PhotoViewGallery extends StatefulWidget {
 }
 
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
-  late final PageController _controller =
-      widget.pageController ?? PageController();
+  late final _controller = widget.pageController ?? PageController();
+  late final _thumbnailController = PageController(
+    viewportFraction: 0.2,
+    initialPage: _controller.initialPage,
+  );
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     if (widget.scaleStateChangedCallback != null) {
@@ -181,33 +189,102 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     }
   }
 
-  int get actualPage {
-    return _controller.hasClients ? _controller.page!.floor() : 0;
-  }
-
-  int get itemCount {
-    if (widget._isBuilder) {
-      return widget.itemCount!;
-    }
-    return widget.pageOptions!.length;
-  }
+  int get itemCount => widget._isBuilder ? widget.itemCount! : widget.pageOptions!.length;
 
   @override
   Widget build(BuildContext context) {
-    // Enable corner hit test
-    return PhotoViewGestureDetectorScope(
+    final child = PhotoViewGestureDetectorScope(   // Enable corner hit test
       axis: widget.scrollDirection,
       child: PageView.builder(
         reverse: widget.reverse,
         controller: _controller,
-        onPageChanged: widget.onPageChanged,
-        itemCount: itemCount,
-        itemBuilder: _buildItem,
+        onPageChanged: (index) {
+          if (_thumbnailController.hasClients && _thumbnailController.page?.round() != index) {
+            _thumbnailController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+            );
+          }
+          widget.onPageChanged?.call(index);
+        },
         scrollDirection: widget.scrollDirection,
         physics: widget.scrollPhysics,
         allowImplicitScrolling: widget.allowImplicitScrolling,
         pageSnapping: widget.pageSnapping,
+        itemCount: itemCount,
+        itemBuilder: _buildItem,
       ),
+    );
+
+    if (!widget.enableThumbnails) {
+      return child;
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const itemHorizontalPadding = 6.0;
+        final itemWidth = constraints.maxWidth * _thumbnailController.viewportFraction - itemHorizontalPadding;
+        final itemHeight = itemWidth * 4/3;
+
+        return Stack(
+          children: [
+            // Photo View
+            child,
+
+            // Thumbnails
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: SizedBox(
+                      height: itemHeight,
+                      child: PageView.builder(
+                        reverse: widget.reverse,
+                        controller: _thumbnailController,
+                        onPageChanged: (index) {
+                          if (_controller.hasClients && _controller.page?.round() != index) {
+                            _controller.jumpToPage(index);
+                          }
+                        },
+                        itemCount: itemCount,
+                        itemBuilder: (context, index) {
+                          final pageOption = _buildPageOption(context, index);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: itemHorizontalPadding / 2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (_thumbnailController.hasClients) {
+                                    _thumbnailController.jumpToPage(index);
+                                  }
+                                },
+                                child: pageOption.child != null
+                                    ? pageOption.child
+                                    : Image(
+                                        image: pageOption.imageProvider!,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -276,6 +353,13 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       return widget.builder!(context, index);
     }
     return widget.pageOptions![index];
+  }
+
+  @override
+  void dispose() {
+    if (widget.pageController == null) _controller.dispose();
+    _thumbnailController.dispose();
+    super.dispose();
   }
 }
 

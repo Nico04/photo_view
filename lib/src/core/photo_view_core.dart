@@ -260,68 +260,69 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     }
 
     return StreamBuilder(
-        stream: controller.outputStateStream,
-        initialData: controller.prevValue,
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<PhotoViewControllerValue> snapshot,
-        ) {
-          if (snapshot.hasData) {
-            final PhotoViewControllerValue value = snapshot.data!;
-            final useImageScale = widget.options.filterQuality != FilterQuality.none;
+      stream: controller.outputStateStream,
+      initialData: controller.prevValue,
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<PhotoViewControllerValue> snapshot,
+      ) {
+        if (snapshot.hasData) {
+          final PhotoViewControllerValue value = snapshot.data!;
+          final useImageScale = widget.options.filterQuality != FilterQuality.none;
 
-            final computedScale = useImageScale ? 1.0 : scale;
+          final computedScale = useImageScale ? 1.0 : scale;
 
-            final matrix = Matrix4.identity()
-              ..translate(value.position.dx, value.position.dy)
-              ..scale(computedScale)
-              ..rotateZ(value.rotation);
+          final matrix = Matrix4.identity()
+            ..translate(value.position.dx, value.position.dy)
+            ..scale(computedScale)
+            ..rotateZ(value.rotation);
 
-            final Widget customChildLayout = CustomSingleChildLayout(
-              delegate: _CenterWithOriginalSizeDelegate(
-                scaleBoundaries.childSize,
-                basePosition,
-                useImageScale,
+          final Widget customChildLayout = CustomSingleChildLayout(
+            delegate: _CenterWithOriginalSizeDelegate(
+              scaleBoundaries.childSize,
+              basePosition,
+              useImageScale,
+            ),
+            child: _buildHero(),
+          );
+
+          final child = Container(
+            constraints: widget.options.tightMode
+                ? BoxConstraints.tight(scaleBoundaries.childSize * scale)
+                : null,
+            child: Center(
+              child: Transform(
+                child: customChildLayout,
+                transform: matrix,
+                alignment: basePosition,
               ),
-              child: _buildHero(),
-            );
+            ),
+            decoration: widget.options.backgroundDecoration,
+          );
 
-            final child = Container(
-              constraints: widget.options.tightMode
-                  ? BoxConstraints.tight(scaleBoundaries.childSize * scale)
-                  : null,
-              child: Center(
-                child: Transform(
-                  child: customChildLayout,
-                  transform: matrix,
-                  alignment: basePosition,
-                ),
-              ),
-              decoration: widget.options.backgroundDecoration,
-            );
-
-            if (widget.options.disableGestures) {
-              return child;
-            }
-
-            return PhotoViewGestureDetector(
-              child: child,
-              onDoubleTap: nextScaleState,
-              onScaleStart: onScaleStart,
-              onScaleUpdate: onScaleUpdate,
-              onScaleEnd: onScaleEnd,
-              hitDetector: this,
-              onTapUp: widget.options.onTapUp != null
-                  ? (details) => widget.options.onTapUp!(context, details, value)
-                  : null,
-              onTapDown: widget.options.onTapDown != null
-                  ? (details) => widget.options.onTapDown!(context, details, value)
-                  : null,
-            );
-          } else {
-            return Container();
+          if (widget.options.disableGestures) {
+            return child;
           }
-        });
+
+          return PhotoViewGestureDetector(
+            child: child,
+            onDoubleTap: nextScaleState,
+            onScaleStart: onScaleStart,
+            onScaleUpdate: onScaleUpdate,
+            onScaleEnd: onScaleEnd,
+            hitDetector: this,
+            onTapUp: widget.options.onTapUp != null
+                ? (details) => widget.options.onTapUp!(context, details, value)
+                : null,
+            onTapDown: widget.options.onTapDown != null
+                ? (details) => widget.options.onTapDown!(context, details, value)
+                : null,
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
   Widget _buildHero() {
