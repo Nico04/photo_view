@@ -33,12 +33,12 @@ class _DialogExampleState extends State<DialogExample> {
           return PhotoViewGestureDetectorScope(
             axis: Axis.vertical,
             child: PhotoView(
-              backgroundDecoration: BoxDecoration(
-                color: Colors.black.withAlpha(240),
-              ),
               imageProvider: const AssetImage("assets/large-image.jpg"),
-              options: const PhotoViewOptions(
-                heroAttributes: PhotoViewHeroAttributes(tag: "someTag"),
+              options: PhotoViewOptions(
+                backgroundDecoration: BoxDecoration(
+                  color: Colors.black.withAlpha(240),
+                ),
+                heroAttributes: const PhotoViewHeroAttributes(tag: "someTag"),
               ),
             ),
           );

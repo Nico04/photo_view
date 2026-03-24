@@ -266,7 +266,6 @@ class PhotoView extends StatefulWidget {
     Key? key,
     required this.imageProvider,
     this.loadingBuilder,
-    this.backgroundDecoration,
     this.wantKeepAlive = false,
     this.semanticLabel,
     this.gaplessPlayback = false,
@@ -291,7 +290,6 @@ class PhotoView extends StatefulWidget {
     Key? key,
     required this.child,
     this.childSize,
-    this.backgroundDecoration,
     this.wantKeepAlive = false,
     this.scaleStateChangedCallback,
     this.controller,
@@ -316,9 +314,6 @@ class PhotoView extends StatefulWidget {
 
   /// Show loadFailedChild when the image failed to load
   final ImageErrorWidgetBuilder? errorBuilder;
-
-  /// Changes the background behind image, defaults to `Colors.black`.
-  final BoxDecoration? backgroundDecoration;
 
   /// This is used to keep the state of an image in the gallery (e.g. scale state).
   /// `false` -> resets the state (default)
@@ -456,14 +451,11 @@ class _PhotoViewState extends State<PhotoView>
         BoxConstraints constraints,
       ) {
         final computedOuterSize = widget.customSize ?? constraints.biggest;
-        final backgroundDecoration = widget.backgroundDecoration ??
-            const BoxDecoration(color: Colors.black);
 
         final Widget content = widget._isCustomChild
             ? CustomChildWrapper(
                 child: widget.child!,
                 childSize: widget.childSize,
-                backgroundDecoration: backgroundDecoration,
                 controller: _controller,
                 scaleStateController: _scaleStateController,
                 outerSize: computedOuterSize,
@@ -472,7 +464,6 @@ class _PhotoViewState extends State<PhotoView>
             : ImageWrapper(
                 imageProvider: widget.imageProvider!,
                 loadingBuilder: widget.loadingBuilder,
-                backgroundDecoration: backgroundDecoration,
                 semanticLabel: widget.semanticLabel,
                 gaplessPlayback: widget.gaplessPlayback,
                 controller: _controller,

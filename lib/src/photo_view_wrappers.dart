@@ -12,7 +12,6 @@ class ImageWrapper extends StatefulWidget {
     Key? key,
     required this.imageProvider,
     required this.loadingBuilder,
-    required this.backgroundDecoration,
     required this.semanticLabel,
     required this.gaplessPlayback,
     required this.controller,
@@ -28,7 +27,6 @@ class ImageWrapper extends StatefulWidget {
   final String? semanticLabel;
   final bool gaplessPlayback;
 
-  final BoxDecoration backgroundDecoration;
   final PhotoViewControllerBase controller;
   final PhotoViewScaleStateController scaleStateController;
   final Size outerSize;
@@ -157,7 +155,6 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
     return PhotoViewCore(
       imageProvider: widget.imageProvider,
-      backgroundDecoration: widget.backgroundDecoration,
       semanticLabel: widget.semanticLabel,
       gaplessPlayback: widget.gaplessPlayback,
       controller: widget.controller,
@@ -182,7 +179,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       return widget.errorBuilder!(context, _lastException!, _lastStack);
     }
     return PhotoViewDefaultError(
-      decoration: widget.backgroundDecoration,
+      decoration: widget.options.backgroundDecoration,
     );
   }
 }
@@ -194,7 +191,6 @@ class CustomChildWrapper extends StatelessWidget {
     Key? key,
     required this.child,
     required this.childSize,
-    required this.backgroundDecoration,
     required this.controller,
     required this.scaleStateController,
     required this.outerSize,
@@ -204,7 +200,6 @@ class CustomChildWrapper extends StatelessWidget {
   final Widget child;
   final Size? childSize;
 
-  final BoxDecoration backgroundDecoration;
   final PhotoViewControllerBase controller;
   final PhotoViewScaleStateController scaleStateController;
   final Size outerSize;
@@ -223,7 +218,6 @@ class CustomChildWrapper extends StatelessWidget {
 
     return PhotoViewCore.customChild(
       customChild: child,
-      backgroundDecoration: backgroundDecoration,
       controller: controller,
       scaleStateController: scaleStateController,
       scaleBoundaries: scaleBoundaries,
@@ -231,5 +225,3 @@ class CustomChildWrapper extends StatelessWidget {
     );
   }
 }
-
-

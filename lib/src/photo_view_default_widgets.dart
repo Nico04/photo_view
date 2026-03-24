@@ -4,7 +4,7 @@ class PhotoViewDefaultError extends StatelessWidget {
   const PhotoViewDefaultError({Key? key, required this.decoration})
       : super(key: key);
 
-  final BoxDecoration decoration;
+  final Decoration decoration;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../photo_view.dart';
 
@@ -25,6 +25,7 @@ class PhotoViewOptions {
     this.disableGestures = false,
     this.enablePanAlways = false,
     this.strictScale = false,
+    this.backgroundDecoration = const BoxDecoration(color: Colors.black),
   });
 
   /// Attributes that are going to be passed to [PhotoViewCore]'s [Hero].
@@ -88,6 +89,7 @@ class PhotoViewOptions {
   /// Enable strictScale will restrict user scale gesture to the maxScale and
   /// minScale values.
   final bool strictScale;
+
+  /// Changes the background behind image, defaults to `Colors.black`.
+  final Decoration backgroundDecoration;
 }
-
-

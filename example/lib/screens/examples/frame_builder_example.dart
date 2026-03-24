@@ -171,7 +171,6 @@ class _GalleryFrameBuilderExampleState
             );
           },
           itemCount: _images.length,
-          backgroundDecoration: const BoxDecoration(color: Colors.black),
           onPageChanged: (index) {
             setState(() {
               currentIndex = index;

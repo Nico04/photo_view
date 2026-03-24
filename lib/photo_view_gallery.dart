@@ -76,7 +76,6 @@ class PhotoViewGallery extends StatefulWidget {
     Key? key,
     required this.pageOptions,
     this.loadingBuilder,
-    this.backgroundDecoration,
     this.wantKeepAlive = false,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -101,7 +100,6 @@ class PhotoViewGallery extends StatefulWidget {
     required this.itemCount,
     required this.builder,
     this.loadingBuilder,
-    this.backgroundDecoration,
     this.wantKeepAlive = false,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -133,9 +131,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.loadingBuilder]
   final LoadingBuilder? loadingBuilder;
-
-  /// Mirror to [PhotoView.backgroundDecoration]
-  final BoxDecoration? backgroundDecoration;
 
   /// Mirror to [PhotoView.wantKeepAlive]
   final bool wantKeepAlive;
@@ -240,6 +235,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       disableGestures: pageOption.options.disableGestures,
       enablePanAlways: pageOption.options.enablePanAlways,
       strictScale: pageOption.options.strictScale,
+      backgroundDecoration: pageOption.options.backgroundDecoration,
     );
 
     final PhotoView photoView = isCustomChild
@@ -247,7 +243,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             key: ObjectKey(index),
             child: pageOption.child,
             childSize: pageOption.childSize,
-            backgroundDecoration: widget.backgroundDecoration,
             wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
@@ -260,7 +255,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
             loadingBuilder: widget.loadingBuilder,
-            backgroundDecoration: widget.backgroundDecoration,
             wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,

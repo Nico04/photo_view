@@ -9,17 +9,12 @@ import 'package:photo_view/src/core/photo_view_hit_corners.dart';
 import 'package:photo_view/src/photo_view_options.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
-const _defaultDecoration = const BoxDecoration(
-  color: const Color.fromRGBO(0, 0, 0, 1.0),
-);
-
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
 class PhotoViewCore extends StatefulWidget {
   const PhotoViewCore({
     Key? key,
     required this.imageProvider,
-    required this.backgroundDecoration,
     required this.semanticLabel,
     required this.gaplessPlayback,
     required this.controller,
@@ -32,7 +27,6 @@ class PhotoViewCore extends StatefulWidget {
   const PhotoViewCore.customChild({
     Key? key,
     required this.customChild,
-    required this.backgroundDecoration,
     required this.controller,
     required this.scaleBoundaries,
     required this.scaleStateController,
@@ -42,7 +36,6 @@ class PhotoViewCore extends StatefulWidget {
         gaplessPlayback = false,
         super(key: key);
 
-  final Decoration? backgroundDecoration;
   final ImageProvider? imageProvider;
   final String? semanticLabel;
   final bool? gaplessPlayback;
@@ -304,7 +297,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                   alignment: basePosition,
                 ),
               ),
-              decoration: widget.backgroundDecoration ?? _defaultDecoration,
+              decoration: widget.options.backgroundDecoration,
             );
 
             if (widget.options.disableGestures) {

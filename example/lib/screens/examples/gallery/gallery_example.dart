@@ -133,7 +133,6 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
               builder: _buildItem,
               itemCount: widget.galleryItems.length,
               loadingBuilder: widget.loadingBuilder,
-              backgroundDecoration: widget.backgroundDecoration,
               pageController: widget.pageController,
               onPageChanged: onPageChanged,
               scrollDirection: widget.scrollDirection,
@@ -169,6 +168,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             ),
             childSize: const Size(300, 300),
             options: PhotoViewOptions(
+              backgroundDecoration: widget.backgroundDecoration ?? const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 1.0)),
               initialScale: PhotoViewComputedScale.contained,
               minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
               maxScale: PhotoViewComputedScale.covered * 4.1,
@@ -178,6 +178,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
         : PhotoViewGalleryPageOptions(
             imageProvider: AssetImage(item.resource),
             options: PhotoViewOptions(
+              backgroundDecoration: widget.backgroundDecoration ?? const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 1.0)),
               initialScale: PhotoViewComputedScale.contained,
               minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
               maxScale: PhotoViewComputedScale.covered * 4.1,

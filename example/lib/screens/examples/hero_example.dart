@@ -60,8 +60,8 @@ class HeroPhotoViewRouteWrapper extends StatelessWidget {
       ),
       child: PhotoView(
         imageProvider: imageProvider,
-        backgroundDecoration: backgroundDecoration,
         options: PhotoViewOptions(
+          backgroundDecoration: backgroundDecoration ?? const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 1.0)),
           minScale: minScale,
           maxScale: maxScale,
           heroAttributes: const PhotoViewHeroAttributes(tag: "someTag"),

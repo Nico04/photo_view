@@ -36,9 +36,9 @@ class CommonExampleRouteWrapper extends StatelessWidget {
         child: PhotoView(
           imageProvider: imageProvider,
           loadingBuilder: loadingBuilder,
-          backgroundDecoration: backgroundDecoration,
           errorBuilder: errorBuilder,
           options: PhotoViewOptions(
+            backgroundDecoration: backgroundDecoration ?? const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 1.0)),
             minScale: minScale ?? 0.0,
             maxScale: maxScale ?? double.infinity,
             initialScale: initialScale ?? PhotoViewComputedScale.contained,
