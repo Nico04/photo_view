@@ -183,11 +183,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     initialPage: _controller.initialPage,
   );
 
-  void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
-    if (widget.scaleStateChangedCallback != null) {
-      widget.scaleStateChangedCallback!(scaleState);
-    }
-  }
+  late bool _showThumbnails = widget.enableThumbnails;
 
   int get itemCount => widget._isBuilder ? widget.itemCount! : widget.pageOptions!.length;
 
@@ -230,52 +226,67 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         return Stack(
           children: [
             // Photo View
-            child,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showThumbnails = !_showThumbnails;
+                });
+              },
+              child: child,
+            ),
 
             // Thumbnails
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-                child: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: SizedBox(
-                      height: itemHeight,
-                      child: PageView.builder(
-                        reverse: widget.reverse,
-                        controller: _thumbnailController,
-                        onPageChanged: (index) {
-                          if (_controller.hasClients && _controller.page?.round() != index) {
-                            _controller.jumpToPage(index);
-                          }
-                        },
-                        itemCount: itemCount,
-                        itemBuilder: (context, index) {
-                          final pageOption = _buildPageOption(context, index);
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: itemHorizontalPadding / 2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (_thumbnailController.hasClients) {
-                                    _thumbnailController.jumpToPage(index);
-                                  }
-                                },
-                                child: pageOption.child != null
-                                    ? pageOption.child
-                                    : Image(
-                                        image: pageOption.imageProvider!,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                          );
-                        },
+              child: IgnorePointer(
+                ignoring: !_showThumbnails,
+                child: AnimatedOpacity(
+                  opacity: _showThumbnails ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: SizedBox(
+                          height: itemHeight,
+                          child: PageView.builder(
+                            reverse: widget.reverse,
+                            controller: _thumbnailController,
+                            onPageChanged: (index) {
+                              if (_controller.hasClients && _controller.page?.round() != index) {
+                                _controller.jumpToPage(index);
+                              }
+                            },
+                            itemCount: itemCount,
+                            itemBuilder: (context, index) {
+                              final pageOption = _buildPageOption(context, index);
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: itemHorizontalPadding / 2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (_thumbnailController.hasClients) {
+                                        _thumbnailController.jumpToPage(index);
+                                      }
+                                    },
+                                    child: pageOption.child != null
+                                        ? pageOption.child
+                                        : Image(
+                                            image: pageOption.imageProvider!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -314,6 +325,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       backgroundDecoration: pageOption.options.backgroundDecoration,
       frameBuilder: pageOption.options.frameBuilder,
     );
+
+    void scaleStateChangedCallback(PhotoViewScaleState scaleState) => widget.scaleStateChangedCallback?.call(scaleState);
 
     final PhotoView photoView = isCustomChild
         ? PhotoView.customChild(
