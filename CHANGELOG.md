@@ -1,4 +1,7 @@
-<a name="unreleased"></a>
+# 1.1.0
+## Added
+- Add new `thumbnailFrameBuilder` to `PhotoViewGallery` to provide a way to customize the thumbnail image frame.
+- 
 # 1.0.0
 ## Added
 - Add thumbnail bar `PhotoViewGallery`.
