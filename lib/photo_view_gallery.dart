@@ -78,7 +78,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
@@ -103,7 +102,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
@@ -147,9 +145,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.scaleStateChangedCallback]
   final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
-
-  /// Mirror to [PhotoView.enableRotation]
-  final bool enableRotation;
 
   /// Mirror to [PhotoView.customSize]
   final Size? customSize;
@@ -280,29 +275,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     final pageOption = _buildPageOption(context, index);
     final isCustomChild = pageOption.child != null;
 
-    // Merge gallery-level enableRotation into page options
-    final pageOptions = PhotoViewOptions(
-      heroAttributes: pageOption.options.heroAttributes,
-      enableRotation:
-          pageOption.options.enableRotation || widget.enableRotation,
-      maxScale: pageOption.options.maxScale,
-      minScale: pageOption.options.minScale,
-      initialScale: pageOption.options.initialScale,
-      basePosition: pageOption.options.basePosition,
-      scaleStateCycle: pageOption.options.scaleStateCycle,
-      onTapUp: pageOption.options.onTapUp,
-      onTapDown: pageOption.options.onTapDown,
-      onScaleEnd: pageOption.options.onScaleEnd,
-      gestureDetectorBehavior: pageOption.options.gestureDetectorBehavior,
-      tightMode: pageOption.options.tightMode,
-      filterQuality: pageOption.options.filterQuality,
-      disableGestures: pageOption.options.disableGestures,
-      enablePanAlways: pageOption.options.enablePanAlways,
-      strictScale: pageOption.options.strictScale,
-      backgroundDecoration: pageOption.options.backgroundDecoration,
-      frameBuilder: pageOption.options.frameBuilder,
-    );
-
     void scaleStateChangedCallback(PhotoViewScaleState scaleState) => widget.scaleStateChangedCallback?.call(scaleState);
 
     final PhotoView photoView = isCustomChild
@@ -315,7 +287,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
             scaleStateChangedCallback: scaleStateChangedCallback,
-            options: pageOptions,
+            options: pageOption.options,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -329,7 +301,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             gaplessPlayback: widget.gaplessPlayback,
             scaleStateChangedCallback: scaleStateChangedCallback,
             errorBuilder: pageOption.errorBuilder,
-            options: pageOptions,
+            options: pageOption.options,
           );
 
     return ClipRect(
