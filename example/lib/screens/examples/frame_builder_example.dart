@@ -132,6 +132,33 @@ class _GalleryFrameBuilderExampleState
           builder: (BuildContext context, int index) {
             return PhotoViewGalleryPageOptions(
               imageProvider: AssetImage(_images[index]),
+              thumbnailFrameBuilder: (context, child) {
+                return Stack(
+                  fit: StackFit.passthrough,
+                  children: [
+                    child,
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        color: Colors.black.withValues(alpha: 0.6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        child: Text(
+                          _captions[index],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
               options: PhotoViewOptions(
                 initialScale: PhotoViewComputedScale.contained,
                 frameBuilder: (context, child) {
@@ -139,7 +166,7 @@ class _GalleryFrameBuilderExampleState
                     children: [
                       child,
                       Positioned(
-                        bottom: 0,
+                        top: 0,
                         left: 0,
                         right: 0,
                         child: Container(

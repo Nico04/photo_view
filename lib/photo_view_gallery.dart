@@ -3,10 +3,7 @@ library photo_view_gallery;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
-    show
-        LoadingBuilder,
-        PhotoView,
-        PhotoViewOptions;
+    show LoadingBuilder, PhotoView, PhotoViewOptions, PhotoViewFrameBuilder;
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
@@ -177,6 +174,8 @@ class PhotoViewGallery extends StatefulWidget {
 }
 
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
+  static const itemHorizontalPadding = 6.0;
+
   late final _controller = widget.pageController ?? PageController();
   late final _thumbnailController = PageController(
     viewportFraction: 0.2,
@@ -219,7 +218,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        const itemHorizontalPadding = 6.0;
         final itemWidth = constraints.maxWidth * _thumbnailController.viewportFraction - itemHorizontalPadding;
         final itemHeight = itemWidth * 4/3;
 
@@ -263,28 +261,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
                               }
                             },
                             itemCount: itemCount,
-                            itemBuilder: (context, index) {
-                              final pageOption = _buildPageOption(context, index);
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: itemHorizontalPadding / 2),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (_thumbnailController.hasClients) {
-                                        _thumbnailController.jumpToPage(index);
-                                      }
-                                    },
-                                    child: pageOption.child != null
-                                        ? pageOption.child
-                                        : Image(
-                                            image: pageOption.imageProvider!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                  ),
-                                ),
-                              );
-                            },
+                            itemBuilder: _buildThumbnail,
                           ),
                         ),
                       ),
@@ -368,6 +345,30 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     return widget.pageOptions![index];
   }
 
+  Widget _buildThumbnail(BuildContext context, int index) {
+    final pageOption = _buildPageOption(context, index);
+
+    final child = pageOption.child ?? Image(
+      image: pageOption.imageProvider!,
+      fit: BoxFit.cover,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: itemHorizontalPadding / 2),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: GestureDetector(
+          onTap: () {
+            if (_thumbnailController.hasClients) {
+              _thumbnailController.jumpToPage(index);
+            }
+          },
+          child: pageOption.thumbnailFrameBuilder?.call(context, child) ?? child,
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     if (widget.pageController == null) _controller.dispose();
@@ -390,6 +391,7 @@ class PhotoViewGalleryPageOptions {
     this.controller,
     this.scaleStateController,
     this.errorBuilder,
+    this.thumbnailFrameBuilder,
     this.options = const PhotoViewOptions(),
   })  : child = null,
         childSize = null,
@@ -401,6 +403,7 @@ class PhotoViewGalleryPageOptions {
     this.childSize,
     this.controller,
     this.scaleStateController,
+    this.thumbnailFrameBuilder,
     this.options = const PhotoViewOptions(),
   })  : errorBuilder = null,
         imageProvider = null;
@@ -425,6 +428,11 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder? errorBuilder;
+
+  /// A builder that allows wrapping or decorating the gallery thumbnail.
+  /// Similar to [Image.frameBuilder], this receives the built PhotoView content
+  /// and returns a new widget. See also [PhotoViewFrameBuilder].
+  final PhotoViewFrameBuilder? thumbnailFrameBuilder;
 
   /// Shared configuration options for gesture, scale and display behavior.
   /// See [PhotoViewOptions] for all available fields and their defaults.

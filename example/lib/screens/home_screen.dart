@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
         children: <Widget>[
           const ExampleAppBar(title: "Photo View"),
           Container(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             child: const Text(
               "See bellow examples of some of the most common photo view usage cases",
               style: const TextStyle(fontSize: 18.0),
@@ -171,14 +171,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(context,
-      {required String text, required VoidCallback onPressed}) {
+  Widget _buildItem(context, {required String text, required VoidCallback onPressed}) {
     return TextButton(
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
-        ),
-      ),
       child: Text(
         text,
         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700),
