@@ -1,3 +1,7 @@
+# 1.2.0
+## Added
+- feat: enhance double tap functionality to zoom with focal point
+
 # 1.1.0
 ## Added
 - Add new `thumbnailFrameBuilder` to `PhotoViewGallery` to provide a way to customize the thumbnail image frame.
