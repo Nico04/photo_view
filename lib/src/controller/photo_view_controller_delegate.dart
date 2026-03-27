@@ -23,7 +23,8 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   ScaleStateCycle get scaleStateCycle => widget.options.scaleStateCycle;
 
   Alignment get basePosition => widget.options.basePosition;
-  Function(double prevScale, double nextScale)? _animateScale;
+  Offset? _nextTargetPosition;
+  Function(double prevScale, double nextScale, [Offset? nextPosition])? _animateScale;
 
   /// Mark if scale need recalculation, useful for scale boundaries changes.
   bool markNeedsScaleRecalc = true;
@@ -52,11 +53,12 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
       scaleBoundaries,
     );
 
-    _animateScale!(prevScale, nextScale);
+    _animateScale!(prevScale, nextScale, _nextTargetPosition);
+    _nextTargetPosition = null;
   }
 
   void addAnimateOnScaleStateUpdate(
-    void animateScale(double prevScale, double nextScale),
+    void animateScale(double prevScale, double nextScale, [Offset? nextPosition]),
   ) {
     _animateScale = animateScale;
   }
@@ -122,7 +124,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     scaleStateController.setInvisibly(newScaleState);
   }
 
-  void nextScaleState() {
+  void nextScaleState(Offset? _lastDoubleTapPos) {
     final PhotoViewScaleState scaleState = scaleStateController.scaleState;
     if (scaleState == PhotoViewScaleState.zoomedIn ||
         scaleState == PhotoViewScaleState.zoomedOut) {
@@ -149,6 +151,22 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     if (originalScale == nextScale) {
       return;
     }
+
+    // When the user double taps, we want to zoom in or out with the double tap as focal point.
+    if (_lastDoubleTapPos != null) {
+      final RenderBox box = context.findRenderObject() as RenderBox;
+      final Size size = box.size;
+      final Offset tapPos = _lastDoubleTapPos;
+
+      final Offset center = size.center(Offset.zero);
+      final double scaleFactor = nextScale / (controller.scale ?? 1.0);
+
+      // Calculate the correct target position ensuring the tappoint remains stationary
+      final Offset targetPosition = (center - tapPos) * (scaleFactor - 1.0) + controller.position * scaleFactor;
+
+      _nextTargetPosition = targetPosition;
+    }
+
     scaleStateController.scaleState = nextScaleState;
   }
 

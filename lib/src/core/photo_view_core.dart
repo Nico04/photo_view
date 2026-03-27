@@ -169,8 +169,13 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     }
   }
 
+  Offset? _lastDoubleTapPos;
+  void onDoubleTapDown(TapDownDetails details) {
+    _lastDoubleTapPos = details.localPosition;
+  }
+
   void onDoubleTap() {
-    nextScaleState();
+    nextScaleState(_lastDoubleTapPos);
   }
 
   void animateScale(double from, double to) {
@@ -228,9 +233,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
       ..addListener(handlePositionAnimate);
   }
 
-  void animateOnScaleStateUpdate(double prevScale, double nextScale) {
+  void animateOnScaleStateUpdate(double prevScale, double nextScale, [Offset? nextPosition]) {
     animateScale(prevScale, nextScale);
-    animatePosition(controller.position, Offset.zero);
+    animatePosition(controller.position, nextPosition ?? Offset.zero);
     animateRotation(controller.rotation, 0.0);
   }
 
@@ -306,7 +311,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
           return PhotoViewGestureDetector(
             child: child,
-            onDoubleTap: nextScaleState,
+            onDoubleTapDown: onDoubleTapDown,
+            onDoubleTap: onDoubleTap,
             onScaleStart: onScaleStart,
             onScaleUpdate: onScaleUpdate,
             onScaleEnd: onScaleEnd,
