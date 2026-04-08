@@ -1,13 +1,13 @@
+# 1.3.0
+- feat: new `overlays` parameter on `PhotoViewGallery`, with default back button
+
 # 1.2.0
-## Added
 - feat: enhance double tap functionality to zoom with focal point
 
 # 1.1.0
-## Added
 - Add new `thumbnailFrameBuilder` to `PhotoViewGallery` to provide a way to customize the thumbnail image frame.
-- 
+
 # 1.0.0
-## Added
 - Add thumbnail bar `PhotoViewGallery`.
 - Add new `frameBuilder` to `PhotoView` to provide a way to customize the image frame.
 - BREAKING: refactor constructor using new `PhotoViewGalleryPageOptions` data class.
