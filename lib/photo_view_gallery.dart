@@ -82,7 +82,9 @@ class PhotoViewGallery extends StatefulWidget {
     this.customSize,
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
+    this.enableBackButton = true,
     this.enableThumbnails,
+    this.overlays,
   })  : itemCount = null,
         builder = null;
 
@@ -105,7 +107,9 @@ class PhotoViewGallery extends StatefulWidget {
     this.customSize,
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
+    this.enableBackButton = true,
     this.enableThumbnails,
+    this.overlays,
   })  : pageOptions = null;
 
   /// A list of options to describe the items in the gallery
@@ -152,9 +156,18 @@ class PhotoViewGallery extends StatefulWidget {
 
   final bool pageSnapping;
 
+  /// Whether to show a back button at the top left corner of the gallery. Defaults to true.
+  final bool enableBackButton;
+
   /// Whether to show a thumbnails bar at the bottom of the gallery.
   /// If null, defaults to true when the gallery has 2 or more items, and false otherwise.
   final bool? enableThumbnails;
+
+  /// An optional list of widgets to be shown as overlays on top of the gallery.
+  /// Include thumbnails bar and back button by default.
+  /// All overlays can be toggled by tapping on the gallery, and will be shown when the gallery is first opened.
+  /// Use [Positioned] to position the overlays as needed.
+  final List<Widget>? overlays;
 
   @override
   State<StatefulWidget> createState() {
@@ -172,7 +185,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   );
 
   late final enableThumbnails = widget.enableThumbnails ?? itemCount > 1;
-  late bool _showThumbnails = enableThumbnails;
+  late final hasOverlays = widget.overlays?.isNotEmpty == true || enableThumbnails || widget.enableBackButton;
+  late bool _showOverlays = hasOverlays;
 
   int get itemCount => widget.itemCount ?? widget.pageOptions!.length;
 
@@ -202,67 +216,90 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       ),
     );
 
-    if (!enableThumbnails) {
+    if (!hasOverlays) {
       return child;
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final itemWidth = constraints.maxWidth * _thumbnailController.viewportFraction - itemHorizontalPadding;
-        final itemHeight = itemWidth * 4/3;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Photo View
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _showOverlays = !_showOverlays;
+            });
+          },
+          child: child,
+        ),
 
-        return Stack(
-          children: [
-            // Photo View
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showThumbnails = !_showThumbnails;
-                });
-              },
-              child: child,
-            ),
+        // Overlays
+        Positioned.fill(
+          child: IgnorePointer(
+            ignoring: !_showOverlays,
+            child: AnimatedOpacity(
+              opacity: _showOverlays ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              child: Stack(
+                children: [
 
-            // Thumbnails
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: IgnorePointer(
-                ignoring: !_showThumbnails,
-                child: AnimatedOpacity(
-                  opacity: _showThumbnails ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOut,
-                  child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: SafeArea(
-                      top: false,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: SizedBox(
-                          height: itemHeight,
-                          child: PageView.builder(
-                            reverse: widget.reverse,
-                            controller: _thumbnailController,
-                            onPageChanged: (index) {
-                              if (_controller.hasClients && _controller.page?.round() != index) {
-                                _controller.jumpToPage(index);
-                              }
-                            },
-                            itemCount: itemCount,
-                            itemBuilder: _buildThumbnail,
-                          ),
-                        ),
+                  // Back button
+                  if (widget.enableBackButton)
+                    const Positioned(
+                      top: 4,
+                      left: 4,
+                      child: SafeArea(
+                        bottom: false,
+                        child: BackButton(),
                       ),
                     ),
-                  ),
-                ),
+
+                  // Thumbnails bar
+                  if (enableThumbnails)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final itemWidth = constraints.maxWidth * _thumbnailController.viewportFraction - itemHorizontalPadding;
+                          final itemHeight = itemWidth * 4/3;
+                          return Container(
+                            color: Colors.black.withOpacity(0.5),
+                            child: SafeArea(
+                              top: false,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: SizedBox(
+                                  height: itemHeight,
+                                  child: PageView.builder(
+                                    reverse: widget.reverse,
+                                    controller: _thumbnailController,
+                                    onPageChanged: (index) {
+                                      if (_controller.hasClients && _controller.page?.round() != index) {
+                                        _controller.jumpToPage(index);
+                                      }
+                                    },
+                                    itemCount: itemCount,
+                                    itemBuilder: _buildThumbnail,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                  // Custom overlays
+                  ...?widget.overlays,
+                ],
               ),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 
