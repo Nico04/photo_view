@@ -129,6 +129,7 @@ class _GalleryFrameBuilderExampleState
         ),
         child: PhotoViewGallery.builder(
           scrollPhysics: const BouncingScrollPhysics(),
+          itemCount: _images.length,
           builder: (BuildContext context, int index) {
             return PhotoViewGalleryPageOptions(
               imageProvider: AssetImage(_images[index]),
@@ -199,7 +200,6 @@ class _GalleryFrameBuilderExampleState
               ),
             );
           },
-          itemCount: _images.length,
           onPageChanged: (index) {
             setState(() {
               currentIndex = index;

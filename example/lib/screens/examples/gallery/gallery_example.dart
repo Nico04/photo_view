@@ -130,13 +130,12 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
           children: <Widget>[
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
-              builder: _buildItem,
               itemCount: widget.galleryItems.length,
               loadingBuilder: widget.loadingBuilder,
               pageController: widget.pageController,
               onPageChanged: onPageChanged,
               scrollDirection: widget.scrollDirection,
-              enableThumbnails: true,
+              builder: _buildItem,
             ),
             Container(
               padding: const EdgeInsets.all(20.0),

@@ -83,7 +83,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.customSize,
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
-    this.enableThumbnails = true,
+    this.enableThumbnails,
   })  : itemCount = null,
         builder = null,
         super(key: key);
@@ -107,7 +107,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.customSize,
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
-    this.enableThumbnails = true,
+    this.enableThumbnails,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
@@ -158,7 +158,8 @@ class PhotoViewGallery extends StatefulWidget {
   final bool pageSnapping;
 
   /// Whether to show a thumbnails bar at the bottom of the gallery.
-  final bool enableThumbnails;
+  /// If null, defaults to true when the gallery has 2 or more items, and false otherwise.
+  final bool? enableThumbnails;
 
   bool get _isBuilder => builder != null;
 
@@ -177,7 +178,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     initialPage: _controller.initialPage,
   );
 
-  late bool _showThumbnails = widget.enableThumbnails;
+  late final enableThumbnails = widget.enableThumbnails ?? itemCount > 1;
+  late bool _showThumbnails = enableThumbnails;
 
   int get itemCount => widget._isBuilder ? widget.itemCount! : widget.pageOptions!.length;
 
@@ -207,7 +209,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       ),
     );
 
-    if (!widget.enableThumbnails) {
+    if (!enableThumbnails) {
       return child;
     }
 
