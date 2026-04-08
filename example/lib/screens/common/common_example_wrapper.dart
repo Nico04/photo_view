@@ -3,7 +3,7 @@ import 'package:photo_view/photo_view.dart';
 
 class CommonExampleRouteWrapper extends StatelessWidget {
   const CommonExampleRouteWrapper({
-    this.imageProvider,
+    required this.imageProvider,
     this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
@@ -15,7 +15,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
     this.errorBuilder,
   });
 
-  final ImageProvider? imageProvider;
+  final ImageProvider imageProvider;
   final LoadingBuilder? loadingBuilder;
   final BoxDecoration? backgroundDecoration;
   final dynamic minScale;

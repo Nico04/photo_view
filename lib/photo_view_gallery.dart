@@ -1,7 +1,6 @@
 library photo_view_gallery;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show LoadingBuilder, PhotoView, PhotoViewOptions, PhotoViewFrameBuilder;
 
@@ -69,8 +68,8 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 class PhotoViewGallery extends StatefulWidget {
   /// Construct a gallery with static items through a list of [PhotoViewGalleryPageOptions].
   const PhotoViewGallery({
-    Key? key,
-    required this.pageOptions,
+    super.key,
+    required List<PhotoViewGalleryPageOptions> this.pageOptions,
     this.loadingBuilder,
     this.wantKeepAlive = false,
     this.gaplessPlayback = false,
@@ -85,16 +84,15 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageSnapping = true,
     this.enableThumbnails,
   })  : itemCount = null,
-        builder = null,
-        super(key: key);
+        builder = null;
 
   /// Construct a gallery with dynamic items.
   ///
   /// The builder must return a [PhotoViewGalleryPageOptions].
   const PhotoViewGallery.builder({
-    Key? key,
-    required this.itemCount,
-    required this.builder,
+    super.key,
+    required int this.itemCount,
+    required PhotoViewGalleryBuilder this.builder,
     this.loadingBuilder,
     this.wantKeepAlive = false,
     this.gaplessPlayback = false,
@@ -108,10 +106,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
     this.enableThumbnails,
-  })  : pageOptions = null,
-        assert(itemCount != null),
-        assert(builder != null),
-        super(key: key);
+  })  : pageOptions = null;
 
   /// A list of options to describe the items in the gallery
   final List<PhotoViewGalleryPageOptions>? pageOptions;
@@ -161,8 +156,6 @@ class PhotoViewGallery extends StatefulWidget {
   /// If null, defaults to true when the gallery has 2 or more items, and false otherwise.
   final bool? enableThumbnails;
 
-  bool get _isBuilder => builder != null;
-
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewGalleryState();
@@ -181,7 +174,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   late final enableThumbnails = widget.enableThumbnails ?? itemCount > 1;
   late bool _showThumbnails = enableThumbnails;
 
-  int get itemCount => widget._isBuilder ? widget.itemCount! : widget.pageOptions!.length;
+  int get itemCount => widget.itemCount ?? widget.pageOptions!.length;
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +275,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     final PhotoView photoView = isCustomChild
         ? PhotoView.customChild(
             key: ObjectKey(index),
-            child: pageOption.child,
+            child: pageOption.child!,
             childSize: pageOption.childSize,
             wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
@@ -293,7 +286,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
           )
         : PhotoView(
             key: ObjectKey(index),
-            imageProvider: pageOption.imageProvider,
+            imageProvider: pageOption.imageProvider!,
             loadingBuilder: widget.loadingBuilder,
             wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
@@ -311,13 +304,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     );
   }
 
-  PhotoViewGalleryPageOptions _buildPageOption(
-      BuildContext context, int index) {
-    if (widget._isBuilder) {
-      return widget.builder!(context, index);
-    }
-    return widget.pageOptions![index];
-  }
+  PhotoViewGalleryPageOptions _buildPageOption(BuildContext context, int index) =>
+      widget.builder?.call(context, index) ?? widget.pageOptions![index];
 
   Widget _buildThumbnail(BuildContext context, int index) {
     final pageOption = _buildPageOption(context, index);
@@ -360,7 +348,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 class PhotoViewGalleryPageOptions {
   PhotoViewGalleryPageOptions({
     Key? key,
-    required this.imageProvider,
+    required ImageProvider this.imageProvider,
     this.semanticLabel,
     this.controller,
     this.scaleStateController,
@@ -368,11 +356,10 @@ class PhotoViewGalleryPageOptions {
     this.thumbnailFrameBuilder,
     this.options = const PhotoViewOptions(),
   })  : child = null,
-        childSize = null,
-        assert(imageProvider != null);
+        childSize = null;
 
   PhotoViewGalleryPageOptions.customChild({
-    required this.child,
+    required Widget this.child,
     this.semanticLabel,
     this.childSize,
     this.controller,

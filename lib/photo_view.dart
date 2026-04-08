@@ -263,8 +263,8 @@ class PhotoView extends StatefulWidget {
   ///
   /// Internally, the image is rendered within an [Image] widget.
   PhotoView({
-    Key? key,
-    required this.imageProvider,
+    super.key,
+    required ImageProvider this.imageProvider,
     this.loadingBuilder,
     this.wantKeepAlive = false,
     this.semanticLabel,
@@ -276,8 +276,7 @@ class PhotoView extends StatefulWidget {
     this.errorBuilder,
     this.options = const PhotoViewOptions(),
   })  : child = null,
-        childSize = null,
-        super(key: key);
+        childSize = null;
 
   /// Creates a widget that displays a zoomable child.
   ///
@@ -286,8 +285,8 @@ class PhotoView extends StatefulWidget {
   /// Instead of a [imageProvider], this constructor will receive a [child] and a [childSize].
   ///
   PhotoView.customChild({
-    Key? key,
-    required this.child,
+    super.key,
+    required Widget this.child,
     this.childSize,
     this.wantKeepAlive = false,
     this.scaleStateChangedCallback,
@@ -299,8 +298,7 @@ class PhotoView extends StatefulWidget {
         imageProvider = null,
         semanticLabel = null,
         gaplessPlayback = false,
-        loadingBuilder = null,
-        super(key: key);
+        loadingBuilder = null;
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
